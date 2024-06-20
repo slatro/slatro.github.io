@@ -9,11 +9,11 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            overflow: hidden;
+            overflow-x: hidden;
             background: url('https://github.com/slatro/slatro.github.io/blob/main/background.jpg') no-repeat center center fixed;
             background-size: cover;
         }
@@ -24,7 +24,9 @@
             border-radius: 8px;
             width: 100%;
             max-width: 600px;
-            margin-top: 20px;
+            margin: 20px auto;
+            flex: 1;
+            overflow-y: auto;
         }
         h1, h2 {
             text-align: center;
@@ -97,6 +99,20 @@
             text-align: center;
             margin-top: 10px;
         }
+        #timer {
+            height: 30px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        #timer div {
+            height: 100%;
+            width: 100%;
+            background-color: #007bff;
+            transition: width 1s linear;
+        }
     </style>
 </head>
 <body>
@@ -133,7 +149,7 @@
         <div id="game" class="form-section hidden">
             <h2>Oyun</h2>
             <p id="harf"></p>
-            <p id="timer"></p>
+            <div id="timer"><div></div></div>
             <form id="gameForm">
                 <div class="form-group">
                     <label for="isim">İsim:</label>
@@ -286,16 +302,18 @@
             const sure = currentGame.sure;
             clearTimeout(timer);
             let timeLeft = sure;
-            const timerElement = document.getElementById('timer');
-            timerElement.textContent = `Kalan Süre: ${timeLeft} saniye`;
+            const timerElement = document.getElementById('timer').querySelector('div');
+            timerElement.style.width = '100%';
+            const interval = 1000;
+            const decrement = 100 / (sure / interval);
             timer = setInterval(() => {
-                timeLeft--;
-                timerElement.textContent = `Kalan Süre: ${timeLeft} saniye`;
+                timeLeft -= interval / 1000;
+                timerElement.style.width = `${timeLeft / sure * 100}%`;
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     document.getElementById('gameForm').submit();
                 }
-            }, 1000);
+            }, interval);
         }
 
         document.getElementById('gameForm').addEventListener('submit', function(e) {
@@ -311,6 +329,7 @@
             scores.push(answers);
             e.target.reset();
 
+            showSection('results');
             document.getElementById('nextRoundBtn').classList.remove('hidden');
         });
 
