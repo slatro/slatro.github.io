@@ -21,7 +21,7 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             border-radius: 8px;
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
         }
         h1 {
             text-align: center;
@@ -83,6 +83,15 @@
             border-radius: 4px;
             margin-bottom: 5px;
         }
+        #gameLink {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #harf {
+            font-size: 2em;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -122,10 +131,20 @@
                 <label for="sure">Süre (saniye):</label>
                 <input type="number" id="sure" required>
             </div>
+            <div class="form-group">
+                <label for="playerCount">Oyuncu Sayısı:</label>
+                <input type="number" id="playerCount" required>
+            </div>
             <button onclick="startGame()">Oyunu Başlat</button>
+        </div>
+        <div id="gameLink" class="hidden">
+            <h2>Oyun Bağlantısı</h2>
+            <p>Arkadaşlarını davet etmek için bu bağlantıyı kullan:</p>
+            <p id="link"></p>
         </div>
         <div id="game" class="form-section hidden">
             <h2>Oyun</h2>
+            <p id="harf"></p>
             <p id="timer"></p>
             <form id="gameForm">
                 <div class="form-group">
@@ -230,11 +249,26 @@
 
         function startGame() {
             const sure = parseInt(document.getElementById('sure').value);
-            currentGame = { sure, players: [currentUser.email], scores: [] };
-            games[currentUser.email] = currentGame;
+            const playerCount = parseInt(document.getElementById('playerCount').value);
+            currentGame = {
+                sure,
+                playerCount,
+                players: [currentUser.email],
+                scores: [],
+                round: 0,
+                harf: randomHarf()
+            };
+            const gameId = `game-${Date.now()}`;
+            games[gameId] = currentGame;
+            const link = `${window.location.origin}${window.location.pathname}?gameId=${gameId}`;
+            document.getElementById('link').innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
+            showSection('gameLink');
             updatePlayerList();
-            showSection('game');
-            nextRound();
+        }
+
+        function randomHarf() {
+            const harfler = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            return harfler.charAt(Math.floor(Math.random() * harfler.length));
         }
 
         function updatePlayerList() {
@@ -248,10 +282,22 @@
             document.getElementById('players').classList.remove('hidden');
         }
 
+        function joinGame() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameId = urlParams.get('gameId');
+            if (gameId && games[gameId]) {
+                currentGame = games[gameId];
+                currentGame.players.push(currentUser.email);
+                updatePlayerList();
+                showSection('game');
+                nextRound();
+            }
+        }
+
         function nextRound() {
-            if (round < totalRounds) {
-                round++;
-                document.getElementById('results').innerHTML = `<p>Round ${round} / ${totalRounds}</p>`;
+            if (currentGame.round < totalRounds) {
+                currentGame.round++;
+                document.getElementById('harf').textContent = `Harf: ${currentGame.harf}`;
                 startTimer();
             } else {
                 endGame();
@@ -299,6 +345,13 @@
             document.getElementById('resultsContent').innerHTML = resultsHTML;
             document.getElementById('results').classList.remove('hidden');
         }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('gameId')) {
+                showSection('login');
+            }
+        };
     </script>
 </body>
 </html>
