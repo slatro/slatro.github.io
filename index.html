@@ -33,7 +33,7 @@
             display: block;
             margin-bottom: 5px;
         }
-        input[type="text"], input[type="number"], input[type="email"], input[type="password"] {
+        input[type="text"], input[type="number"] {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
@@ -97,35 +97,7 @@
 <body>
     <div class="container">
         <h1>İsim, Şehir, Eşya ve Diğerleri Oyunu</h1>
-        <div class="nav">
-            <a href="#" onclick="showSection('login')">Giriş Yap</a> | 
-            <a href="#" onclick="showSection('register')">Kayıt Ol</a>
-        </div>
-        <div id="login" class="form-section">
-            <h2>Giriş Yap</h2>
-            <div class="form-group">
-                <label for="loginEmail">E-posta:</label>
-                <input type="email" id="loginEmail" required>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Şifre:</label>
-                <input type="password" id="loginPassword" required>
-            </div>
-            <button onclick="login()">Giriş Yap</button>
-        </div>
-        <div id="register" class="form-section hidden">
-            <h2>Kayıt Ol</h2>
-            <div class="form-group">
-                <label for="registerEmail">E-posta:</label>
-                <input type="email" id="registerEmail" required>
-            </div>
-            <div class="form-group">
-                <label for="registerPassword">Şifre:</label>
-                <input type="password" id="registerPassword" required>
-            </div>
-            <button onclick="register()">Kayıt Ol</button>
-        </div>
-        <div id="gameSetup" class="form-section hidden">
+        <div id="gameSetup" class="form-section">
             <h2>Yeni Oyun Kur</h2>
             <div class="form-group">
                 <label for="sure">Süre (saniye):</label>
@@ -208,9 +180,8 @@
         </div>
     </div>
     <script>
-        const users = {};
         const games = {};
-        let currentUser = null;
+        let currentUser = 'Anonim';
         let currentGame = null;
         let timer;
         let round = 0;
@@ -222,38 +193,13 @@
             document.getElementById(section).classList.remove('hidden');
         }
 
-        function register() {
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            if (users[email]) {
-                alert('Bu e-posta adresi zaten kayıtlı.');
-                return;
-            }
-            users[email] = { email, password };
-            alert('Kayıt başarılı! Giriş yapabilirsiniz.');
-            showSection('login');
-        }
-
-        function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const user = users[email];
-            if (!user || user.password !== password) {
-                alert('E-posta veya şifre yanlış.');
-                return;
-            }
-            currentUser = user;
-            alert('Giriş başarılı!');
-            showSection('gameSetup');
-        }
-
         function startGame() {
             const sure = parseInt(document.getElementById('sure').value);
             const playerCount = parseInt(document.getElementById('playerCount').value);
             currentGame = {
                 sure,
                 playerCount,
-                players: [currentUser.email],
+                players: [currentUser],
                 scores: [],
                 round: 0,
                 harf: randomHarf()
@@ -287,7 +233,7 @@
             const gameId = urlParams.get('gameId');
             if (gameId && games[gameId]) {
                 currentGame = games[gameId];
-                currentGame.players.push(currentUser.email);
+                currentGame.players.push(currentUser);
                 updatePlayerList();
                 showSection('game');
                 nextRound();
@@ -349,7 +295,8 @@
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('gameId')) {
-                showSection('login');
+                showSection('game');
+                joinGame();
             }
         };
     </script>
