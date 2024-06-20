@@ -237,7 +237,8 @@
                 players: [{ name: currentUser, emoji: currentEmoji, online: true }],
                 scores: [],
                 round: 0,
-                harf: randomHarf()
+                harf: randomHarf(),
+                started: false
             };
             const gameId = `game-${Date.now()}`;
             games[gameId] = currentGame;
@@ -287,7 +288,8 @@
         }
 
         function startGameFromDashboard() {
-            if (currentGame.players.length > 1) {
+            if (currentGame.players.length > 1 && !currentGame.started) {
+                currentGame.started = true;
                 showSection('game');
                 nextRound();
             }
@@ -353,7 +355,13 @@
         }
 
         window.onload = function() {
-            joinGame();
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameId = urlParams.get('gameId');
+            if (gameId) {
+                joinGame();
+            } else {
+                showSection('gameSetup');
+            }
         };
     </script>
 </body>
