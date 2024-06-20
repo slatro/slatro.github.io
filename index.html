@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İsim, Şehir, Eşya ve Diğerleri Oyunu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .results p {
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .hidden {
+            display: none;
+        }
+        #playerList {
+            list-style-type: none;
+            padding: 0;
+        }
+        #playerList li {
+            background-color: #e0e0e0;
+            padding: 5px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>İsim, Şehir, Eşya ve Diğerleri Oyunu</h1>
+        <div class="nav">
+            <a href="#" onclick="showSection('login')">Giriş Yap</a> | 
+            <a href="#" onclick="showSection('register')">Kayıt Ol</a>
+        </div>
+        <div id="login" class="form-section">
+            <h2>Giriş Yap</h2>
+            <div class="form-group">
+                <label for="loginEmail">E-posta:</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Şifre:</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button onclick="login()">Giriş Yap</button>
+        </div>
+        <div id="register" class="form-section hidden">
+            <h2>Kayıt Ol</h2>
+            <div class="form-group">
+                <label for="registerEmail">E-posta:</label>
+                <input type="email" id="registerEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Şifre:</label>
+                <input type="password" id="registerPassword" required>
+            </div>
+            <button onclick="register()">Kayıt Ol</button>
+        </div>
+        <div id="gameSetup" class="form-section hidden">
+            <h2>Yeni Oyun Kur</h2>
+            <div class="form-group">
+                <label for="sure">Süre (saniye):</label>
+                <input type="number" id="sure" required>
+            </div>
+            <button onclick="startGame()">Oyunu Başlat</button>
+        </div>
+        <div id="game" class="form-section hidden">
+            <h2>Oyun</h2>
+            <p id="timer"></p>
+            <form id="gameForm">
+                <div class="form-group">
+                    <label for="isim">İsim:</label>
+                    <input type="text" id="isim" name="isim" required>
+                </div>
+                <div class="form-group">
+                    <label for="sehir">Şehir:</label>
+                    <input type="text" id="sehir" name="sehir" required>
+                </div>
+                <div class="form-group">
+                    <label for="esya">Eşya:</label>
+                    <input type="text" id="esya" name="esya" required>
+                </div>
+                <div class="form-group">
+                    <label for="bitki">Bitki:</label>
+                    <input type="text" id="bitki" name="bitki" required>
+                </div>
+                <div class="form-group">
+                    <label for="unlu">Ünlü:</label>
+                    <input type="text" id="unlu" name="unlu" required>
+                </div>
+                <div class="form-group">
+                    <label for="hayvan">Hayvan:</label>
+                    <input type="text" id="hayvan" name="hayvan" required>
+                </div>
+                <div class="form-group">
+                    <label for="meslek">Meslek:</label>
+                    <input type="text" id="meslek" name="meslek" required>
+                </div>
+                <div class="form-group">
+                    <label for="ulke">Ülke:</label>
+                    <input type="text" id="ulke" name="ulke" required>
+                </div>
+                <div class="form-group">
+                    <label for="sekiz_harfli">8 Harfli Kelime:</label>
+                    <input type="text" id="sekiz_harfli" name="sekiz_harfli" required>
+                </div>
+                <div class="form-group">
+                    <label for="araba_markasi">Araba Markası:</label>
+                    <input type="text" id="araba_markasi" name="araba_markasi" required>
+                </div>
+                <div class="form-group">
+                    <label for="ilce">İlçe:</label>
+                    <input type="text" id="ilce" name="ilce" required>
+                </div>
+                <div class="form-group">
+                    <label for="yabanci_sehir">Yabancı Şehir:</label>
+                    <input type="text" id="yabanci_sehir" name="yabanci_sehir" required>
+                </div>
+                <button type="submit">Cevapları Gönder</button>
+            </form>
+        </div>
+        <div id="results" class="results hidden">
+            <h2>Oyun Sonuçları</h2>
+            <div id="resultsContent"></div>
+        </div>
+        <div id="players" class="form-section hidden">
+            <h2>Oyuncular</h2>
+            <ul id="playerList"></ul>
+        </div>
+    </div>
+    <script>
+        const users = {};
+        const games = {};
+        let currentUser = null;
+        let currentGame = null;
+        let timer;
+        let round = 0;
+        const totalRounds = 10;
+        let scores = [];
+
+        function showSection(section) {
+            document.querySelectorAll('.form-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(section).classList.remove('hidden');
+        }
+
+        function register() {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            if (users[email]) {
+                alert('Bu e-posta adresi zaten kayıtlı.');
+                return;
+            }
+            users[email] = { email, password };
+            alert('Kayıt başarılı! Giriş yapabilirsiniz.');
+            showSection('login');
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const user = users[email];
+            if (!user || user.password !== password) {
+                alert('E-posta veya şifre yanlış.');
+                return;
+            }
+            currentUser = user;
+            alert('Giriş başarılı!');
+            showSection('gameSetup');
+        }
+
+        function startGame() {
+            const sure = parseInt(document.getElementById('sure').value);
+            currentGame = { sure, players: [currentUser.email], scores: [] };
+            games[currentUser.email] = currentGame;
+            updatePlayerList();
+            showSection('game');
+            nextRound();
+        }
+
+        function updatePlayerList() {
+            const playerList = document.getElementById('playerList');
+            playerList.innerHTML = '';
+            currentGame.players.forEach(player => {
+                const li = document.createElement('li');
+                li.textContent = player;
+                playerList.appendChild(li);
+            });
+            document.getElementById('players').classList.remove('hidden');
+        }
+
+        function nextRound() {
+            if (round < totalRounds) {
+                round++;
+                document.getElementById('results').innerHTML = `<p>Round ${round} / ${totalRounds}</p>`;
+                startTimer();
+            } else {
+                endGame();
+            }
+        }
+
+        function startTimer() {
+            const sure = currentGame.sure;
+            clearTimeout(timer);
+            let timeLeft = sure;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `Kalan Süre: ${timeLeft} saniye`;
+            timer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = `Kalan Süre: ${timeLeft} saniye`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('gameForm').submit();
+                }
+            }, 1000);
+        }
+
+        document.getElementById('gameForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearTimeout(timer);
+
+            const formData = new FormData(e.target);
+            const answers = {};
+            formData.forEach((value, key) => {
+                answers[key] = value;
+            });
+
+            scores.push(answers);
+            e.target.reset();
+
+            nextRound();
+        });
+
+        function endGame() {
+            document.getElementById('game').classList.add('hidden');
+            let resultsHTML = '<h2>Oyun Sonuçları</h2>';
+            scores.forEach((score, index) => {
+                resultsHTML += `<p><strong>Round ${index + 1}:</strong> İsim: ${score.isim}, Şehir: ${score.sehir}, Eşya: ${score.esya}, Bitki: ${score.bitki}, Ünlü: ${score.unlu}, Hayvan: ${score.hayvan}, Meslek: ${score.meslek}, Ülke: ${score.ulke}, 8 Harfli Kelime: ${score.sekiz_harfli}, Araba Markası: ${score.araba_markasi}, İlçe: ${score.ilce}, Yabancı Şehir: ${score.yabanci_sehir}</p>`;
+            });
+            document.getElementById('resultsContent').innerHTML = resultsHTML;
+            document.getElementById('results').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
