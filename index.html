@@ -290,7 +290,7 @@
         function nextRound() {
             if (currentGame.round < totalRounds) {
                 currentGame.round++;
-                document.getElementById('harf').textContent = `Harf: ${currentGame.harf}`;
+                document.getElementById('harf').textContent = `Harf: ${randomHarf()}`;
                 document.getElementById('nextRoundBtn').classList.add('hidden');
                 startTimer();
             } else {
@@ -329,6 +329,9 @@
             scores.push(answers);
             e.target.reset();
 
+            document.getElementById('resultsContent').innerHTML = scores.map((score, index) => {
+                return `<p><strong>Round ${index + 1}:</strong> İsim: ${score.isim}, Şehir: ${score.sehir}, Eşya: ${score.esya}, Bitki: ${score.bitki}, Ünlü: ${score.unlu}, Hayvan: ${score.hayvan}, Meslek: ${score.meslek}, Ülke: ${score.ulke}, 8 Harfli Kelime: ${score.sekiz_harfli}, Araba Markası: ${score.araba_markasi}, İlçe: ${score.ilce}, Yabancı Şehir: ${score.yabanci_sehir}</p>`;
+            }).join('');
             showSection('results');
             document.getElementById('nextRoundBtn').classList.remove('hidden');
         });
@@ -340,7 +343,7 @@
                 resultsHTML += `<p><strong>Round ${index + 1}:</strong> İsim: ${score.isim}, Şehir: ${score.sehir}, Eşya: ${score.esya}, Bitki: ${score.bitki}, Ünlü: ${score.unlu}, Hayvan: ${score.hayvan}, Meslek: ${score.meslek}, Ülke: ${score.ulke}, 8 Harfli Kelime: ${score.sekiz_harfli}, Araba Markası: ${score.araba_markasi}, İlçe: ${score.ilce}, Yabancı Şehir: ${score.yabanci_sehir}</p>`;
             });
             document.getElementById('resultsContent').innerHTML = resultsHTML;
-            document.getElementById('results').classList.remove('hidden');
+            showSection('results');
         }
 
         window.onload = function() {
