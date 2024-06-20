@@ -108,7 +108,7 @@
 </head>
 <body>
     <video autoplay muted loop class="background-video">
-        <source src="path/to/your/video.mov" type="video/mp4">
+        <source src="path/to/your/video.mp4" type="video/mp4">
     </video>
     <div class="container">
         <h1>İsim, Şehir Oyunu</h1>
@@ -138,6 +138,7 @@
             <h2>Oyun Bağlantısı</h2>
             <p>Arkadaşlarını davet etmek için bu bağlantıyı kullan:</p>
             <p id="link"></p>
+            <button onclick="showDashboard()">Dashboard'a Git</button>
         </div>
         <div id="game" class="form-section hidden">
             <h2>Oyun</h2>
@@ -196,13 +197,14 @@
             </form>
             <button onclick="nextRound()" class="hidden" id="nextRoundBtn">Bir Sonraki Turu Başlat</button>
         </div>
+        <div id="dashboard" class="form-section hidden">
+            <h2>Oyun Dashboard</h2>
+            <ul id="playerList"></ul>
+            <button onclick="startGameFromDashboard()">Oyunu Başlat</button>
+        </div>
         <div id="results" class="results hidden">
             <h2>Oyun Sonuçları</h2>
             <div id="resultsContent"></div>
-        </div>
-        <div id="players" class="form-section hidden">
-            <h2>Oyuncular</h2>
-            <ul id="playerList"></ul>
         </div>
     </div>
     <script>
@@ -252,7 +254,6 @@
                 li.innerHTML = `<span class="emoji">${player.emoji}</span> ${player.name} <span class="status" style="background-color: ${player.online ? 'green' : 'red'}"></span>`;
                 playerList.appendChild(li);
             });
-            document.getElementById('players').classList.remove('hidden');
         }
 
         function joinGame() {
@@ -264,11 +265,20 @@
                     currentGame.players.push({ name: currentUser, emoji: currentEmoji, online: true });
                 }
                 updatePlayerList();
-                showSection('game');
-                nextRound();
+                showSection('dashboard');
             } else {
                 showSection('gameSetup');
             }
+        }
+
+        function showDashboard() {
+            updatePlayerList();
+            showSection('dashboard');
+        }
+
+        function startGameFromDashboard() {
+            showSection('game');
+            nextRound();
         }
 
         function nextRound() {
