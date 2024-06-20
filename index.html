@@ -206,7 +206,7 @@
         <div id="dashboard" class="form-section hidden">
             <h2>Oyun Dashboard</h2>
             <ul id="playerList"></ul>
-            <button onclick="startGameFromDashboard()">Oyunu Başlat</button>
+            <button id="startGameBtn" onclick="startGameFromDashboard()" disabled>Oyunu Başlat</button>
         </div>
         <div id="results" class="results hidden">
             <h2>Oyun Sonuçları</h2>
@@ -260,6 +260,10 @@
                 li.innerHTML = `<span class="emoji">${player.emoji}</span> ${player.name} <span class="status" style="background-color: ${player.online ? 'green' : 'red'}"></span>`;
                 playerList.appendChild(li);
             });
+
+            if (currentGame.players.length > 1) {
+                document.getElementById('startGameBtn').disabled = false;
+            }
         }
 
         function joinGame() {
@@ -273,7 +277,7 @@
                 updatePlayerList();
                 showSection('dashboard');
             } else {
-                startGame(); // Yeni oyun kurma fonksiyonunu çağır.
+                showSection('gameSetup');
             }
         }
 
@@ -283,8 +287,10 @@
         }
 
         function startGameFromDashboard() {
-            showSection('game');
-            nextRound();
+            if (currentGame.players.length > 1) {
+                showSection('game');
+                nextRound();
+            }
         }
 
         function nextRound() {
