@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İsim, Şehir, Eşya ve Diğerleri Oyunu</title>
+    <title>İsim, Şehir Oyunu</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -98,7 +98,7 @@
     </style>
 </head>
 <body>
-    <h1>İsim, Şehir, Eşya ve Diğerleri Oyunu</h1>
+    <h1>İsim, Şehir Oyunu</h1>
     <div class="container">
         <div id="gameSetup" class="form-section">
             <h2>Yeni Oyun Kur</h2>
@@ -238,7 +238,9 @@
             const gameId = urlParams.get('gameId');
             if (gameId && games[gameId]) {
                 currentGame = games[gameId];
-                currentGame.players.push({ name: currentUser, emoji: currentEmoji, online: true });
+                if (!currentGame.players.some(player => player.name === currentUser)) {
+                    currentGame.players.push({ name: currentUser, emoji: currentEmoji, online: true });
+                }
                 updatePlayerList();
                 showSection('game');
                 nextRound();
