@@ -30,12 +30,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     beginGameBtn.addEventListener('click', () => {
-        const playerIndex = players.findIndex(player => player.name === getPlayerName());
-        if (playerIndex !== -1) {
-            players[playerIndex].ready = true;
-            updatePlayersList();
-            if (players.every(player => player.ready)) {
-                startRound();
+        if (gameOwner) {
+            const playerIndex = players.findIndex(player => player.name === 'Player 1');
+            if (playerIndex !== -1) {
+                players[playerIndex].ready = true;
+                updatePlayersList();
+                if (players.every(player => player.ready)) {
+                    startRound();
+                }
+            }
+        } else {
+            const playerIndex = players.findIndex(player => player.name === getPlayerName());
+            if (playerIndex !== -1) {
+                players[playerIndex].ready = true;
+                updatePlayersList();
+                if (players.every(player => player.ready)) {
+                    startRound();
+                }
             }
         }
     });
@@ -54,12 +65,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupGame(time, playerCount) {
         players = Array.from({ length: playerCount }, (_, i) => ({ name: `Player ${i + 1}`, ready: false }));
-        players[0].ready = gameOwner; // First player is the game owner and is ready
+        if (gameOwner) {
+            players[0].ready = true; // The game owner is automatically ready
+        }
         updatePlayersList();
         gameDashboard.style.display = 'block';
         gameLink.textContent = `Oyuna katılmak için bu linki paylaşın: ${window.location.origin}${window.location.pathname}?game=${gameID}`;
         gameBoard.style.display = 'none';
         resultsDiv.style.display = 'none';
+        beginGameBtn.disabled = players.some(player => !player.ready);
     }
 
     function updatePlayersList() {
@@ -143,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getPlayerName() {
-        return `Player ${players.length + 1}`;
+        return gameOwner ? 'Player 1' : `Player ${players.length + 1}`;
     }
 
     function checkGameLink() {
@@ -158,7 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function joinGame() {
         gameSetup.style.display = 'none';
         gameDashboard.style.display = 'block';
-        players.push({ name: getPlayerName(), ready: false });
+        if (!players.some(player => player.name === getPlayerName())) {
+            players.push({ name: getPlayerName(), ready: false });
+        }
         updatePlayersList();
     }
 
