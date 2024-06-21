@@ -23,8 +23,20 @@ function startGame() {
     document.getElementById('game-settings').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
     
+    displayPlayers();
     startRound();
     startTimer(timeLimit);
+}
+
+function displayPlayers() {
+    const playersDiv = document.getElementById('players');
+    playersDiv.innerHTML = '';
+    players.forEach(player => {
+        const playerDiv = document.createElement('div');
+        playerDiv.className = 'player';
+        playerDiv.innerHTML = `<p>${player.emoji} ${player.name}</p>`;
+        playersDiv.appendChild(playerDiv);
+    });
 }
 
 function startRound() {
