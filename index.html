@@ -3,366 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İsim, Şehir Oyunu</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-            background: url('https://github.com/slatro/slatro.github.io/blob/main/background.jpg') no-repeat center center fixed;
-            background-size: cover;
-        }
-        .container {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            width: 100%;
-            max-width: 600px;
-            margin: 20px auto;
-            flex: 1;
-            overflow-y: auto;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"], select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:disabled {
-            background-color: #ccc;
-        }
-        .results {
-            margin-top: 20px;
-        }
-        .results p {
-            background-color: #e0e0e0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .hidden {
-            display: none;
-        }
-        #playerList {
-            list-style-type: none;
-            padding: 0;
-        }
-        #playerList li {
-            display: flex;
-            align-items: center;
-            background-color: #e0e0e0;
-            padding: 5px;
-            border-radius: 4px;
-            margin-bottom: 5px;
-        }
-        #playerList li .emoji {
-            margin-right: 10px;
-        }
-        #playerList li .status {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-left: auto;
-        }
-        #gameLink {
-            text-align: center;
-            margin-top: 20px;
-        }
-        #harf {
-            font-size: 2em;
-            text-align: center;
-            margin-top: 10px;
-        }
-        #timer {
-            height: 30px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-        }
-        #timer div {
-            height: 100%;
-            width: 100%;
-            background-color: #007bff;
-            transition: width 1s linear;
-        }
-    </style>
+    <title>Oyun Sitesi</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>İsim, Şehir Oyunu</h1>
-        <div id="gameSetup" class="form-section">
-            <h2>Yeni Oyun Kur</h2>
-            <div class="form-group">
-                <label for="sure">Süre (saniye):</label>
-                <select id="sure">
-                    <option value="100">100</option>
-                    <option value="120">120</option>
-                    <option value="150">150</option>
-                    <option value="180">180</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="playerCount">Oyuncu Sayısı:</label>
-                <select id="playerCount">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                </select>
-            </div>
-            <button onclick="startGame()">Oyunu Başlat</button>
+        <h1>Oyun Sitesi</h1>
+        <div class="game-setup">
+            <label for="time-select">Süre Seçimi:</label>
+            <select id="time-select">
+                <option value="100">100 saniye</option>
+                <option value="120">120 saniye</option>
+                <option value="150">150 saniye</option>
+                <option value="180">180 saniye</option>
+            </select>
+            <label for="player-select">Oyuncu Sayısı:</label>
+            <select id="player-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+            <button id="start-game">Oyunu Başlat</button>
         </div>
-        <div id="gameLink" class="hidden">
-            <h2>Oyun Bağlantısı</h2>
-            <p>Arkadaşlarını davet etmek için bu bağlantıyı kullan:</p>
-            <p id="link"></p>
-            <button onclick="showDashboard()">Dashboard'a Git</button>
+        <div class="game-dashboard">
+            <div class="players-list" id="players-list"></div>
+            <button id="begin-game">Oyuna Başla</button>
         </div>
-        <div id="game" class="form-section hidden">
-            <h2>Oyun</h2>
-            <p id="harf"></p>
-            <div id="timer"><div></div></div>
-            <form id="gameForm">
-                <div class="form-group">
-                    <label for="isim">İsim:</label>
-                    <input type="text" id="isim" name="isim" required>
-                </div>
-                <div class="form-group">
-                    <label for="sehir">Şehir:</label>
-                    <input type="text" id="sehir" name="sehir" required>
-                </div>
-                <div class="form-group">
-                    <label for="esya">Eşya:</label>
-                    <input type="text" id="esya" name="esya" required>
-                </div>
-                <div class="form-group">
-                    <label for="bitki">Bitki:</label>
-                    <input type="text" id="bitki" name="bitki" required>
-                </div>
-                <div class="form-group">
-                    <label for="unlu">Ünlü:</label>
-                    <input type="text" id="unlu" name="unlu" required>
-                </div>
-                <div class="form-group">
-                    <label for="hayvan">Hayvan:</label>
-                    <input type="text" id="hayvan" name="hayvan" required>
-                </div>
-                <div class="form-group">
-                    <label for="meslek">Meslek:</label>
-                    <input type="text" id="meslek" name="meslek" required>
-                </div>
-                <div class="form-group">
-                    <label for="ulke">Ülke:</label>
-                    <input type="text" id="ulke" name="ulke" required>
-                </div>
-                <div class="form-group">
-                    <label for="sekiz_harfli">8 Harfli Kelime:</label>
-                    <input type="text" id="sekiz_harfli" name="sekiz_harfli" required>
-                </div>
-                <div class="form-group">
-                    <label for="araba_markasi">Araba Markası:</label>
-                    <input type="text" id="araba_markasi" name="araba_markasi" required>
-                </div>
-                <div class="form-group">
-                    <label for="ilce">İlçe:</label>
-                    <input type="text" id="ilce" name="ilce" required>
-                </div>
-                <div class="form-group">
-                    <label for="yabanci_sehir">Yabancı Şehir:</label>
-                    <input type="text" id="yabanci_sehir" name="yabanci_sehir" required>
-                </div>
-                <button type="submit">Cevapları Gönder</button>
-            </form>
-            <button onclick="nextRound()" class="hidden" id="nextRoundBtn">Bir Sonraki Turu Başlat</button>
+        <div class="game-board" id="game-board">
+            <div class="category">İsim</div>
+            <input type="text" id="category-input">
+            <button id="submit-answer">Cevabı Gönder</button>
         </div>
-        <div id="dashboard" class="form-section hidden">
-            <h2>Oyun Dashboard</h2>
-            <ul id="playerList"></ul>
-            <button id="startGameBtn" onclick="startGameFromDashboard()" disabled>Oyunu Başlat</button>
-        </div>
-        <div id="results" class="results hidden">
-            <h2>Oyun Sonuçları</h2>
-            <div id="resultsContent"></div>
+        <div class="results" id="results">
+            <h2>Sonuçlar</h2>
+            <div id="results-list"></div>
         </div>
     </div>
-    <script>
-        const games = {};
-        let currentUser = `Anonim-${Math.floor(Math.random() * 1000)}`;
-        let currentEmoji = String.fromCodePoint(0x1F600 + Math.floor(Math.random() * 80));
-        let currentGame = null;
-        let timer;
-        let round = 0;
-        const totalRounds = 10;
-        let scores = [];
-
-        function showSection(section) {
-            document.querySelectorAll('.form-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById(section).classList.remove('hidden');
-        }
-
-        function startGame() {
-            const sure = parseInt(document.getElementById('sure').value);
-            const playerCount = parseInt(document.getElementById('playerCount').value);
-            currentGame = {
-                sure,
-                playerCount,
-                players: [{ name: currentUser, emoji: currentEmoji, online: true }],
-                scores: [],
-                round: 0,
-                harf: randomHarf(),
-                started: false
-            };
-            const gameId = `game-${Date.now()}`;
-            games[gameId] = currentGame;
-            const link = `${window.location.origin}${window.location.pathname}?gameId=${gameId}`;
-            document.getElementById('link').innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
-            showSection('gameLink');
-            updatePlayerList();
-        }
-
-        function randomHarf() {
-            const harfler = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            return harfler.charAt(Math.floor(Math.random() * harfler.length));
-        }
-
-        function updatePlayerList() {
-            const playerList = document.getElementById('playerList');
-            playerList.innerHTML = '';
-            currentGame.players.forEach(player => {
-                const li = document.createElement('li');
-                li.innerHTML = `<span class="emoji">${player.emoji}</span> ${player.name} <span class="status" style="background-color: ${player.online ? 'green' : 'red'}"></span>`;
-                playerList.appendChild(li);
-            });
-
-            if (currentGame.players.length > 1) {
-                document.getElementById('startGameBtn').disabled = false;
-            }
-        }
-
-        function joinGame() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const gameId = urlParams.get('gameId');
-            if (gameId && games[gameId]) {
-                currentGame = games[gameId];
-                if (!currentGame.players.some(player => player.name === currentUser)) {
-                    currentGame.players.push({ name: currentUser, emoji: currentEmoji, online: true });
-                }
-                updatePlayerList();
-                showSection('dashboard');
-            } else {
-                showSection('gameSetup');
-            }
-        }
-
-        function showDashboard() {
-            updatePlayerList();
-            showSection('dashboard');
-        }
-
-        function startGameFromDashboard() {
-            if (currentGame.players.length > 1 && !currentGame.started) {
-                currentGame.started = true;
-                showSection('game');
-                nextRound();
-            }
-        }
-
-        function nextRound() {
-            if (currentGame.round < totalRounds) {
-                currentGame.round++;
-                document.getElementById('harf').textContent = `Harf: ${randomHarf()}`;
-                document.getElementById('nextRoundBtn').classList.add('hidden');
-                startTimer();
-            } else {
-                endGame();
-            }
-        }
-
-        function startTimer() {
-            const sure = currentGame.sure;
-            clearTimeout(timer);
-            let timeLeft = sure;
-            const timerElement = document.getElementById('timer').querySelector('div');
-            timerElement.style.width = '100%';
-            const interval = 1000;
-            const decrement = 100 / (sure / interval);
-            timer = setInterval(() => {
-                timeLeft -= interval / 1000;
-                timerElement.style.width = `${timeLeft / sure * 100}%`;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    document.getElementById('gameForm').submit();
-                }
-            }, interval);
-        }
-
-        document.getElementById('gameForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            clearTimeout(timer);
-
-            const formData = new FormData(e.target);
-            const answers = {};
-            formData.forEach((value, key) => {
-                answers[key] = value;
-            });
-
-            scores.push(answers);
-            e.target.reset();
-
-            document.getElementById('resultsContent').innerHTML = scores.map((score, index) => {
-                return `<p><strong>Round ${index + 1}:</strong> İsim: ${score.isim}, Şehir: ${score.sehir}, Eşya: ${score.esya}, Bitki: ${score.bitki}, Ünlü: ${score.unlu}, Hayvan: ${score.hayvan}, Meslek: ${score.meslek}, Ülke: ${score.ulke}, 8 Harfli Kelime: ${score.sekiz_harfli}, Araba Markası: ${score.araba_markasi}, İlçe: ${score.ilce}, Yabancı Şehir: ${score.yabanci_sehir}</p>`;
-            }).join('');
-            showSection('results');
-            document.getElementById('nextRoundBtn').classList.remove('hidden');
-        });
-
-        function endGame() {
-            document.getElementById('game').classList.add('hidden');
-            let resultsHTML = '<h2>Oyun Sonuçları</h2>';
-            scores.forEach((score, index) => {
-                resultsHTML += `<p><strong>Round ${index + 1}:</strong> İsim: ${score.isim}, Şehir: ${score.sehir}, Eşya: ${score.esya}, Bitki: ${score.bitki}, Ünlü: ${score.unlu}, Hayvan: ${score.hayvan}, Meslek: ${score.meslek}, Ülke: ${score.ulke}, 8 Harfli Kelime: ${score.sekiz_harfli}, Araba Markası: ${score.araba_markasi}, İlçe: ${score.ilce}, Yabancı Şehir: ${score.yabanci_sehir}</p>`;
-            });
-            document.getElementById('resultsContent').innerHTML = resultsHTML;
-            showSection('results');
-        }
-
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const gameId = urlParams.get('gameId');
-            if (gameId) {
-                joinGame();
-            } else {
-                showSection('gameSetup');
-            }
-        };
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
