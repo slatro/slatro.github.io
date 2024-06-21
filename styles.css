@@ -1,86 +1,59 @@
 body {
     font-family: Arial, sans-serif;
-    background: url('background.jpg') no-repeat center center fixed;
+    background: url('images/background.jpg') no-repeat center center fixed;
     background-size: cover;
-    color: #fff;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
+    color: #fff;
 }
 
 .container {
-    text-align: center;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 20px;
-    border-radius: 10px;
     width: 80%;
-    max-width: 600px;
+    margin: auto;
+    text-align: center;
 }
 
-.game-setup, .game-dashboard, .game-board, .results {
+header {
+    margin-top: 50px;
+}
+
+#game-settings {
     margin: 20px 0;
 }
 
-label, select, button, input {
-    margin: 5px;
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
+#game-screen, #result-screen {
+    margin-top: 20px;
 }
 
-button {
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    padding: 15px;
+#timer {
+    font-size: 1.5em;
+    margin: 20px 0;
 }
 
-button:disabled {
-    background-color: #6c757d;
-}
-
-button:hover:enabled {
-    background-color: #218838;
-}
-
-.players-list {
+#players {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-around;
+    margin-bottom: 20px;
 }
 
-.players-list div {
-    background: rgba(255, 255, 255, 0.2);
-    margin: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    flex: 1 1 calc(50% - 20px);
-    box-sizing: border-box;
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.category {
-    font-size: 24px;
+#question-section {
+    margin-bottom: 20px;
+}
+
+.question {
     margin-bottom: 10px;
 }
 
-#category-input {
-    padding: 10px;
+input[type="text"] {
     width: 80%;
-}
-
-.results-list div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 10px 0;
-}
-
-.tick, .cross {
-    margin-left: 10px;
-    cursor: pointer;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
 }
