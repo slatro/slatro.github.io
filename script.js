@@ -1,182 +1,79 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const startGameBtn = document.getElementById('start-game');
-    const beginGameBtn = document.getElementById('begin-game');
-    const submitAnswerBtn = document.getElementById('submit-answer');
-    const playersList = document.getElementById('players-list');
-    const gameDashboard = document.querySelector('.game-dashboard');
-    const gameBoard = document.querySelector('.game-board');
-    const resultsDiv = document.querySelector('.results');
-    const resultsList = document.getElementById('results-list');
-    const categoriesDiv = document.getElementById('categories');
-    const gameLetterDiv = document.getElementById('game-letter');
-    const gameLink = document.getElementById('game-link');
-    const gameSetup = document.querySelector('.game-setup');
+body {
+    font-family: Arial, sans-serif;
+    background: url('background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: auto;
+}
 
-    const categories = ['İsim', 'Şehir', 'Eşya', 'Bitki', 'Ünlü', 'Hayvan', 'Meslek', 'Ülke', '8 Harfli Kelime', 'Araba Markası', 'İlçe', 'Yabancı Şehir'];
-    const turkishAlphabet = 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ'.split('');
-    let players = [];
-    let currentLetter = '';
-    let timer;
-    let answers = [];
-    let gameID = '';
-    let gameOwner = false;
+.container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+}
 
-    startGameBtn.addEventListener('click', () => {
-        const timeSelect = document.getElementById('time-select').value;
-        const playerSelect = document.getElementById('player-select').value;
-        gameID = generateUUID();
-        gameOwner = true;
-        setupGame(parseInt(timeSelect), parseInt(playerSelect));
-    });
+.game-setup, .game-dashboard, .game-board, .results {
+    margin: 20px 0;
+}
 
-    beginGameBtn.addEventListener('click', () => {
-        if (gameOwner) {
-            const playerIndex = players.findIndex(player => player.name === 'Player 1');
-            if (playerIndex !== -1) {
-                players[playerIndex].ready = true;
-                updatePlayersList();
-                if (players.every(player => player.ready)) {
-                    startRound();
-                }
-            }
-        } else {
-            const playerIndex = players.findIndex(player => player.name === getPlayerName());
-            if (playerIndex !== -1) {
-                players[playerIndex].ready = true;
-                updatePlayersList();
-                if (players.every(player => player.ready)) {
-                    startRound();
-                }
-            }
-        }
-    });
+label, select, button, input {
+    margin: 5px;
+    padding: 10px;
+}
 
-    submitAnswerBtn.addEventListener('click', () => {
-        const answerInputs = document.querySelectorAll('.category-input');
-        answerInputs.forEach(input => {
-            const answer = input.value.trim();
-            if (answer) {
-                answers.push({ player: getPlayerName(), category: input.dataset.category, answer });
-                input.value = '';
-            }
-        });
-        displayResults();
-    });
+button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
 
-    function setupGame(time, playerCount) {
-        players = Array.from({ length: playerCount }, (_, i) => ({ name: `Player ${i + 1}`, ready: false }));
-        if (gameOwner) {
-            players[0].ready = true; // The game owner is automatically ready
-        }
-        updatePlayersList();
-        gameDashboard.style.display = 'block';
-        gameLink.textContent = `Oyuna katılmak için bu linki paylaşın: ${window.location.origin}${window.location.pathname}?game=${gameID}`;
-        gameBoard.style.display = 'none';
-        resultsDiv.style.display = 'none';
-        beginGameBtn.disabled = players.some(player => !player.ready);
-    }
+button:disabled {
+    background-color: #6c757d;
+}
 
-    function updatePlayersList() {
-        playersList.innerHTML = players.map(player => `
-            <div>${player.name} ${player.ready ? '✔️' : ''}</div>
-        `).join('');
-        beginGameBtn.disabled = players.some(player => !player.ready);
-    }
+button:hover:enabled {
+    background-color: #218838;
+}
 
-    function startRound() {
-        gameDashboard.style.display = 'none';
-        gameBoard.style.display = 'block';
-        resultsDiv.style.display = 'none';
-        currentLetter = turkishAlphabet[Math.floor(Math.random() * turkishAlphabet.length)];
-        gameLetterDiv.textContent = `Başlangıç Harfi: ${currentLetter}`;
-        categoriesDiv.innerHTML = categories.map(category => `
-            <div>
-                <div class="category">${category}</div>
-                <input type="text" class="category-input" data-category="${category}">
-            </div>
-        `).join('');
-        startTimer();
-    }
+.players-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 
-    function startTimer() {
-        clearInterval(timer);
-        let time = 100; // Example time for a round, change as needed
-        timer = setInterval(() => {
-            if (time > 0) {
-                time--;
-            } else {
-                clearInterval(timer);
-                displayResults();
-            }
-        }, 1000);
-    }
+.players-list div {
+    background: rgba(255, 255, 255, 0.2);
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
 
-    function displayResults() {
-        gameBoard.style.display = 'none';
-        resultsDiv.style.display = 'block';
-        resultsList.innerHTML = answers.map(a => `
-            <div>
-                <div>${a.player} (${a.category}): ${a.answer}</div>
-                <div>
-                    <span class="tick">✔️</span>
-                    <span class="cross">❌</span>
-                </div>
-            </div>
-        `).join('');
+.category {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
 
-        // Automatically set ticks and crosses based on answers
-        const answerDivs = resultsList.querySelectorAll('div');
-        answerDivs.forEach(div => {
-            const answerText = div.querySelector('div').textContent.split(': ')[1];
-            const cross = div.querySelector('.cross');
-            const tick = div.querySelector('.tick');
+#category-input {
+    padding: 10px;
+    width: 80%;
+}
 
-            if (!answerText || answerText.length <= 1) {
-                cross.classList.add('active');
-            } else {
-                tick.classList.add('active');
-            }
+.results-list div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+}
 
-            tick.addEventListener('click', () => {
-                tick.classList.add('active');
-                cross.classList.remove('active');
-            });
-
-            cross.addEventListener('click', () => {
-                cross.classList.add('active');
-                tick.classList.remove('active');
-            });
-        });
-    }
-
-    function generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    }
-
-    function getPlayerName() {
-        return gameOwner ? 'Player 1' : `Player ${players.length + 1}`;
-    }
-
-    function checkGameLink() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const game = urlParams.get('game');
-        if (game) {
-            gameID = game;
-            joinGame();
-        }
-    }
-
-    function joinGame() {
-        gameSetup.style.display = 'none';
-        gameDashboard.style.display = 'block';
-        if (!players.some(player => player.name === getPlayerName())) {
-            players.push({ name: getPlayerName(), ready: false });
-        }
-        updatePlayersList();
-    }
-
-    checkGameLink();
-});
+.tick, .cross {
+    margin-left: 10px;
+    cursor: pointer;
+}
