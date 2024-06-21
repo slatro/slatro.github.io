@@ -180,8 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
         maxPlayers = parseInt(localStorage.getItem('maxPlayers'));
         if (players.length < maxPlayers && !players.some(player => player.name === getPlayerName())) {
             players.push({ name: getPlayerName(), ready: false });
+            updatePlayersList();
+        } else if (players.length >= maxPlayers) {
+            alert("Oyuncu sayısı sınırına ulaşıldı. Daha fazla oyuncu katılamaz.");
         }
-        updatePlayersList();
     }
 
     checkGameLink();
