@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         players = Array.from({ length: playerCount }, (_, i) => ({ name: `Player ${i + 1}`, ready: false }));
         playersList.innerHTML = players.map(player => `<div>${player.name}</div>`).join('');
         gameDashboard.style.display = 'block';
-        gameLink.textContent = `Oyuna katılmak için bu linki paylaşın: ${window.location.href}?game=${gameID}`;
+        gameLink.textContent = `Oyuna katılmak için bu linki paylaşın: ${window.location.origin}${window.location.pathname}?game=${gameID}`;
         gameBoard.style.display = 'none';
         resultsDiv.style.display = 'none';
     }
@@ -125,4 +125,22 @@ document.addEventListener('DOMContentLoaded', () => {
             return v.toString(16);
         });
     }
+
+    function checkGameLink() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const game = urlParams.get('game');
+        if (game) {
+            gameID = game;
+            joinGame();
+        }
+    }
+
+    function joinGame() {
+        // Implement player joining logic here
+        players.push({ name: `Player ${players.length + 1}`, ready: false });
+        playersList.innerHTML = players.map(player => `<div>${player.name}</div>`).join('');
+        beginGameBtn.disabled = false;
+    }
+
+    checkGameLink();
 });
