@@ -153,40 +153,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getPlayerName() {
-        const gameOwnerFlag = localStorage.getItem('gameOwner') === 'true';
-        if (gameOwnerFlag && players.length === 0) {
-            return 'Player 1';
-        }
-        return `Player ${players.length + 1}`;
-    }
-
-    function checkGameLink() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const game = urlParams.get('game');
-        if (game) {
-            gameID = game;
-            joinGame();
-        } else {
-            // Show the game setup if no game ID is present
-            gameSetup.style.display = 'block';
-            gameDashboard.style.display = 'none';
-            gameBoard.style.display = 'none';
-            resultsDiv.style.display = 'none';
-        }
-    }
-
-    function joinGame() {
-        gameSetup.style.display = 'none';
-        gameDashboard.style.display = 'block';
-        players = JSON.parse(localStorage.getItem('players')) || [];
-        maxPlayers = parseInt(localStorage.getItem('maxPlayers'));
-        if (players.length < maxPlayers && !players.some(player => player.name === getPlayerName())) {
-            players.push({ name: getPlayerName(), ready: false });
-            updatePlayersList();
-        } else if (players.length >= maxPlayers) {
-            alert("Oyuncu sayısı sınırına ulaşıldı. Daha fazla oyuncu katılamaz.");
-        }
-    }
-
-    checkGameLink();
-});
+        const gameOwnerFlag = localStorage
