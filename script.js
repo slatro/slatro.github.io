@@ -20,15 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let answers = [];
     let gameID = '';
     let gameOwner = false;
+    let maxPlayers = 0;
 
     startGameBtn.addEventListener('click', () => {
         const timeSelect = document.getElementById('time-select').value;
         const playerSelect = document.getElementById('player-select').value;
         gameID = generateUUID();
         gameOwner = true;
-        setupGame(parseInt(timeSelect), parseInt(playerSelect));
+        maxPlayers = parseInt(playerSelect);
+        setupGame(parseInt(timeSelect), maxPlayers);
         localStorage.setItem('gameID', gameID);
         localStorage.setItem('players', JSON.stringify(players));
+        localStorage.setItem('maxPlayers', maxPlayers);
         // Redirect to the game link
         window.location.href = `${window.location.origin}${window.location.pathname}?game=${gameID}`;
     });
@@ -174,7 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gameSetup.style.display = 'none';
         gameDashboard.style.display = 'block';
         players = JSON.parse(localStorage.getItem('players')) || [];
-        if (!players.some(player => player.name === getPlayerName())) {
+        maxPlayers = parseInt(localStorage.getItem('maxPlayers'));
+        if (players.length < maxPlayers && !players.some(player => player.name === getPlayerName())) {
             players.push({ name: getPlayerName(), ready: false });
         }
         updatePlayersList();
