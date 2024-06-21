@@ -9,6 +9,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    overflow: auto;
 }
 
 .container {
@@ -34,7 +35,11 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+button:disabled {
+    background-color: #6c757d;
+}
+
+button:hover:enabled {
     background-color: #218838;
 }
 
@@ -59,4 +64,16 @@ button:hover {
 #category-input {
     padding: 10px;
     width: 80%;
+}
+
+.results-list div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.tick, .cross {
+    margin-left: 10px;
+    cursor: pointer;
 }
