@@ -3,14 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const beginGameBtn = document.getElementById('begin-game');
     const submitAnswerBtn = document.getElementById('submit-answer');
     const playersList = document.getElementById('players-list');
-    const gameDashboard = document.querySelector('.game-dashboard');
-    const gameBoard = document.querySelector('.game-board');
-    const resultsDiv = document.querySelector('.results');
+    const gameDashboard = document.getElementById('game-dashboard');
+    const gameBoard = document.getElementById('game-board');
+    const resultsDiv = document.getElementById('results');
     const resultsList = document.getElementById('results-list');
     const categoriesDiv = document.getElementById('categories');
     const gameLetterDiv = document.getElementById('game-letter');
     const gameLink = document.getElementById('game-link');
-    const gameSetup = document.querySelector('.game-setup');
+    const gameSetup = document.getElementById('game-setup');
 
     const categories = ['İsim', 'Şehir', 'Eşya', 'Bitki', 'Ünlü', 'Hayvan', 'Meslek', 'Ülke', '8 Harfli Kelime', 'Araba Markası', 'İlçe', 'Yabancı Şehir'];
     const turkishAlphabet = 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ'.split('');
@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             players[0].ready = true; // The game owner is automatically ready
         }
         updatePlayersList();
+        gameSetup.style.display = 'none';
         gameDashboard.style.display = 'block';
         gameLink.textContent = `Oyuna katılmak için bu linki paylaşın: ${window.location.origin}${window.location.pathname}?game=${gameID}`;
         gameBoard.style.display = 'none';
@@ -160,6 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (game) {
             gameID = game;
             joinGame();
+        } else {
+            // Show the game setup if no game ID is present
+            gameSetup.style.display = 'block';
+            gameDashboard.style.display = 'none';
+            gameBoard.style.display = 'none';
+            resultsDiv.style.display = 'none';
         }
     }
 
