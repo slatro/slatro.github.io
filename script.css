@@ -1,0 +1,70 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const startGameBtn = document.getElementById('start-game');
+    const beginGameBtn = document.getElementById('begin-game');
+    const submitAnswerBtn = document.getElementById('submit-answer');
+    const playersList = document.getElementById('players-list');
+    const gameBoard = document.getElementById('game-board');
+    const resultsList = document.getElementById('results-list');
+    const resultsDiv = document.getElementById('results');
+    const categoryInput = document.getElementById('category-input');
+    
+    let players = [];
+    let currentCategory = 'İsim';
+    let timer;
+    let answers = [];
+
+    startGameBtn.addEventListener('click', () => {
+        const timeSelect = document.getElementById('time-select').value;
+        const playerSelect = document.getElementById('player-select').value;
+        setupGame(parseInt(timeSelect), parseInt(playerSelect));
+    });
+
+    beginGameBtn.addEventListener('click', () => {
+        if (players.length > 0) {
+            startRound();
+        }
+    });
+
+    submitAnswerBtn.addEventListener('click', () => {
+        const answer = categoryInput.value.trim();
+        if (answer) {
+            answers.push({ player: 'Me', answer });
+            categoryInput.value = '';
+            displayResults();
+        }
+    });
+
+    function setupGame(time, playerCount) {
+        players = Array.from({ length: playerCount }, (_, i) => `Player ${i + 1}`);
+        playersList.innerHTML = players.map(player => `<div>${player}</div>`).join('');
+        gameBoard.style.display = 'none';
+        resultsDiv.style.display = 'none';
+    }
+
+    function startRound() {
+        gameBoard.style.display = 'block';
+        resultsDiv.style.display = 'none';
+        answers = [];
+        categoryInput.focus();
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        let time = 10; // Example time for a round
+        timer = setInterval(() => {
+            if (time > 0) {
+                time--;
+            } else {
+                clearInterval(timer);
+                displayResults();
+            }
+        }, 1000);
+    }
+
+    function displayResults() {
+        gameBoard.style.display = 'none';
+        resultsDiv.style.display = 'block';
+        resultsList.innerHTML = answers.map(a => `<div>${a.player}: ${a.answer}</div>`).join('');
+    }
+});
