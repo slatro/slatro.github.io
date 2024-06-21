@@ -28,11 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
         gameID = generateUUID();
         gameOwner = true;
         maxPlayers = parseInt(playerSelect);
-        setupGame(parseInt(timeSelect), maxPlayers);
         localStorage.setItem('gameID', gameID);
-        localStorage.setItem('players', JSON.stringify(players));
+        localStorage.setItem('players', JSON.stringify([{ name: 'Player 1', ready: true }]));
         localStorage.setItem('maxPlayers', maxPlayers);
-        localStorage.setItem('gameOwner', true);
+        localStorage.setItem('gameOwner', 'true');
         // Redirect to the game link
         window.location.href = `${window.location.origin}${window.location.pathname}?game=${gameID}`;
     });
@@ -61,10 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function setupGame(time, playerCount) {
-        players = Array.from({ length: playerCount }, (_, i) => ({ name: `Player ${i + 1}`, ready: false }));
-        if (gameOwner) {
-            players[0].ready = true; // The game owner is automatically ready
-        }
+        players = Array.from({ length: playerCount - 1 }, (_, i) => ({ name: `Player ${i + 2}`, ready: false }));
         updatePlayersList();
         gameSetup.style.display = 'none';
         gameDashboard.style.display = 'block';
@@ -160,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (gameOwnerFlag && players.length === 0) {
             return 'Player 1';
         }
-        return `Player ${players.length + 1}`;
+        return `Player ${players.length + 2}`;
     }
 
     function checkGameLink() {
@@ -183,10 +179,10 @@ document.addEventListener('DOMContentLoaded', () => {
         gameDashboard.style.display = 'block';
         players = JSON.parse(localStorage.getItem('players')) || [];
         maxPlayers = parseInt(localStorage.getItem('maxPlayers'));
-        if (players.length < maxPlayers && !players.some(player => player.name === getPlayerName())) {
+        if (players.length < maxPlayers - 1 && !players.some(player => player.name === getPlayerName())) {
             players.push({ name: getPlayerName(), ready: false });
             updatePlayersList();
-        } else if (players.length >= maxPlayers) {
+        } else if (players.length >= maxPlayers - 1) {
             alert("Oyuncu sayısı sınırına ulaşıldı. Daha fazla oyuncu katılamaz.");
         }
     }
