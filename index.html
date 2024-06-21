@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>isim</title>
+    <title>Oyun Sitesi</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>isim</h1>
-        <div class="game-setup">
+        <h1>Oyun Sitesi</h1>
+        <div class="game-setup" id="game-setup">
             <label for="time-select">Süre Seçimi:</label>
             <select id="time-select">
                 <option value="100">100 saniye</option>
@@ -25,18 +25,18 @@
             </select>
             <button id="start-game">Oyunu Oluştur</button>
         </div>
-        <div class="game-dashboard" style="display: none;">
+        <div class="game-dashboard" id="game-dashboard" style="display: none;">
             <h2>Oyuncular</h2>
             <div id="players-list"></div>
             <p id="game-link"></p>
             <button id="begin-game" disabled>Oyuna Başla</button>
         </div>
-        <div class="game-board" style="display: none;">
+        <div class="game-board" id="game-board" style="display: none;">
             <h2 id="game-letter"></h2>
             <div id="categories"></div>
             <button id="submit-answer">Cevabı Gönder</button>
         </div>
-        <div class="results" style="display: none;">
+        <div class="results" id="results" style="display: none;">
             <h2>Sonuçlar</h2>
             <div id="results-list"></div>
         </div>
