@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('gameID', gameID);
         localStorage.setItem('players', JSON.stringify(players));
         localStorage.setItem('maxPlayers', maxPlayers);
+        localStorage.setItem('gameOwner', true);
         // Redirect to the game link
         window.location.href = `${window.location.origin}${window.location.pathname}?game=${gameID}`;
     });
@@ -155,7 +156,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getPlayerName() {
-        return gameOwner ? 'Player 1' : `Player ${players.length + 1}`;
+        const gameOwnerFlag = localStorage.getItem('gameOwner') === 'true';
+        if (gameOwnerFlag && players.length === 0) {
+            return 'Player 1';
+        }
+        return `Player ${players.length + 1}`;
     }
 
     function checkGameLink() {
