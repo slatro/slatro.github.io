@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoriesDiv = document.getElementById('categories');
     const gameLetterDiv = document.getElementById('game-letter');
     const gameLink = document.getElementById('game-link');
+    const gameSetup = document.querySelector('.game-setup');
 
     const categories = ['İsim', 'Şehir', 'Eşya', 'Bitki', 'Ünlü', 'Hayvan', 'Meslek', 'Ülke', '8 Harfli Kelime', 'Araba Markası', 'İlçe', 'Yabancı Şehir'];
     const turkishAlphabet = 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ'.split('');
@@ -136,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function joinGame() {
-        // Implement player joining logic here
+        gameSetup.style.display = 'none';
+        gameDashboard.style.display = 'block';
         players.push({ name: `Player ${players.length + 1}`, ready: false });
         playersList.innerHTML = players.map(player => `<div>${player.name}</div>`).join('');
         beginGameBtn.disabled = false;
