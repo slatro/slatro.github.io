@@ -1,191 +1,80 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const startGameBtn = document.getElementById('start-game');
-    const beginGameBtn = document.getElementById('begin-game');
-    const submitAnswerBtn = document.getElementById('submit-answer');
-    const playersList = document.getElementById('players-list');
-    const gameDashboard = document.getElementById('game-dashboard');
-    const gameBoard = document.getElementById('game-board');
-    const resultsDiv = document.getElementById('results');
-    const resultsList = document.getElementById('results-list');
-    const categoriesDiv = document.getElementById('categories');
-    const gameLetterDiv = document.getElementById('game-letter');
-    const gameLink = document.getElementById('game-link');
-    const gameSetup = document.getElementById('game-setup');
+let players = [];
+let currentQuestionIndex = 0;
+let timeLeft;
+let timerInterval;
+const categories = ["İsim", "Şehir", "Eşya", "Bitki", "Ünlü", "Hayvan", "Meslek", "Ülke", "8 Harfli Kelime", "Araba Markası", "İlçe", "Yabancı Şehir"];
+const maxRounds = 10;
 
-    const categories = ['İsim', 'Şehir', 'Eşya', 'Bitki', 'Ünlü', 'Hayvan', 'Meslek', 'Ülke', '8 Harfli Kelime', 'Araba Markası', 'İlçe', 'Yabancı Şehir'];
-    const turkishAlphabet = 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ'.split('');
-    let players = [];
-    let currentLetter = '';
-    let timer;
-    let answers = [];
-    let gameID = '';
-    let gameOwner = false;
-    let maxPlayers = 0;
+document.getElementById('start-game').addEventListener('click', startGame);
 
-    startGameBtn.addEventListener('click', () => {
-        const timeSelect = document.getElementById('time-select').value;
-        const playerSelect = document.getElementById('player-select').value;
-        gameID = generateUUID();
-        gameOwner = true;
-        maxPlayers = parseInt(playerSelect);
-        localStorage.setItem('gameID', gameID);
-        localStorage.setItem('players', JSON.stringify([{ name: 'Player 1', ready: true }]));
-        localStorage.setItem('maxPlayers', maxPlayers);
-        localStorage.setItem('gameOwner', 'true');
-        // Redirect to the game link
-        window.location.href = `${window.location.origin}${window.location.pathname}?game=${gameID}`;
-    });
-
-    beginGameBtn.addEventListener('click', () => {
-        const playerIndex = players.findIndex(player => player.name === getPlayerName());
-        if (playerIndex !== -1) {
-            players[playerIndex].ready = true;
-            updatePlayersList();
-            if (players.every(player => player.ready)) {
-                startRound();
-            }
-        }
-    });
-
-    submitAnswerBtn.addEventListener('click', () => {
-        const answerInputs = document.querySelectorAll('.category-input');
-        answerInputs.forEach(input => {
-            const answer = input.value.trim();
-            if (answer) {
-                answers.push({ player: getPlayerName(), category: input.dataset.category, answer });
-                input.value = '';
-            }
-        });
-        displayResults();
-    });
-
-    function setupGame(time, playerCount) {
-        players = Array.from({ length: playerCount - 1 }, (_, i) => ({ name: `Player ${i + 2}`, ready: false }));
-        updatePlayersList();
-        gameSetup.style.display = 'none';
-        gameDashboard.style.display = 'block';
-        gameLink.textContent = `Oyuna katılmak için bu linki paylaşın: ${window.location.origin}${window.location.pathname}?game=${gameID}`;
-        gameBoard.style.display = 'none';
-        resultsDiv.style.display = 'none';
-        beginGameBtn.disabled = players.some(player => !player.ready);
-    }
-
-    function updatePlayersList() {
-        playersList.innerHTML = players.map(player => `
-            <div>${player.name} ${player.ready ? '✔️' : ''}</div>
-        `).join('');
-        beginGameBtn.disabled = players.some(player => !player.ready);
-        localStorage.setItem('players', JSON.stringify(players));
-    }
-
-    function startRound() {
-        gameDashboard.style.display = 'none';
-        gameBoard.style.display = 'block';
-        resultsDiv.style.display = 'none';
-        currentLetter = turkishAlphabet[Math.floor(Math.random() * turkishAlphabet.length)];
-        gameLetterDiv.textContent = `Başlangıç Harfi: ${currentLetter}`;
-        categoriesDiv.innerHTML = categories.map(category => `
-            <div>
-                <div class="category">${category}</div>
-                <input type="text" class="category-input" data-category="${category}">
-            </div>
-        `).join('');
-        startTimer();
-    }
-
-    function startTimer() {
-        clearInterval(timer);
-        let time = 100; // Example time for a round, change as needed
-        timer = setInterval(() => {
-            if (time > 0) {
-                time--;
-            } else {
-                clearInterval(timer);
-                displayResults();
-            }
-        }, 1000);
-    }
-
-    function displayResults() {
-        gameBoard.style.display = 'none';
-        resultsDiv.style.display = 'block';
-        resultsList.innerHTML = answers.map(a => `
-            <div>
-                <div>${a.player} (${a.category}): ${a.answer}</div>
-                <div>
-                    <span class="tick">✔️</span>
-                    <span class="cross">❌</span>
-                </div>
-            </div>
-        `).join('');
-
-        // Automatically set ticks and crosses based on answers
-        const answerDivs = resultsList.querySelectorAll('div');
-        answerDivs.forEach(div => {
-            const answerText = div.querySelector('div').textContent.split(': ')[1];
-            const cross = div.querySelector('.cross');
-            const tick = div.querySelector('.tick');
-
-            if (!answerText || answerText.length <= 1) {
-                cross.classList.add('active');
-            } else {
-                tick.classList.add('active');
-            }
-
-            tick.addEventListener('click', () => {
-                tick.classList.add('active');
-                cross.classList.remove('active');
-            });
-
-            cross.addEventListener('click', () => {
-                cross.classList.add('active');
-                tick.classList.remove('active');
-            });
+function startGame() {
+    const playerCount = parseInt(document.getElementById('player-count').value);
+    const timeLimit = parseInt(document.getElementById('time-select').value);
+    
+    for (let i = 0; i < playerCount; i++) {
+        players.push({
+            name: `Oyuncu ${i + 1}`,
+            emoji: getRandomEmoji(),
+            answers: [],
+            score: 0
         });
     }
+    
+    document.getElementById('game-settings').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'block';
+    
+    startRound();
+    startTimer(timeLimit);
+}
 
-    function generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
+function startRound() {
+    if (currentQuestionIndex >= maxRounds) {
+        showResults();
+        return;
     }
+    
+    const questionSection = document.getElementById('question-section');
+    questionSection.innerHTML = '';
+    
+    categories.forEach(category => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question';
+        questionDiv.innerHTML = `<label for="${category}">${category}: </label><input type="text" id="${category}">`;
+        questionSection.appendChild(questionDiv);
+    });
+    
+    currentQuestionIndex++;
+}
 
-    function getPlayerName() {
-        const gameOwnerFlag = localStorage.getItem('gameOwner') === 'true';
-        if (gameOwnerFlag && players.length === 0) {
-            return 'Player 1';
+function startTimer(seconds) {
+    timeLeft = seconds;
+    document.getElementById('time-left').innerText = timeLeft;
+    
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('time-left').innerText = timeLeft;
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            evaluateAnswers();
         }
-        return `Player ${players.length + 2}`;
-    }
+    }, 1000);
+}
 
-    function checkGameLink() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const game = urlParams.get('game');
-        if (game) {
-            gameID = game;
-            joinGame();
-        } else {
-            // Show the game setup if no game ID is present
-            gameSetup.style.display = 'block';
-            gameDashboard.style.display = 'none';
-            gameBoard.style.display = 'none';
-            resultsDiv.style.display = 'none';
-        }
-    }
+function evaluateAnswers() {
+    // Cevapları değerlendirme ve puanlama işlemi burada yapılacak
+    
+    startRound();
+}
 
-    function joinGame() {
-        gameSetup.style.display = 'none';
-        gameDashboard.style.display = 'block';
-        players = JSON.parse(localStorage.getItem('players')) || [];
-        maxPlayers = parseInt(localStorage.getItem('maxPlayers'));
-        if (players.length < maxPlayers - 1 && !players.some(player => player.name === getPlayerName())) {
-            players.push({ name: getPlayerName(), ready: false });
-            updatePlayersList();
-        } else if (players.length >= maxPlayers - 1) {
-            alert("Oyuncu sayısı sınırına ulaşıldı. Daha fazla oyuncu katılamaz.");
-        }
-    }
+function showResults() {
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    
+    // Sonuçları gösterme işlemi burada yapılacak
+}
 
-    checkGameLink();
-});
+function getRandomEmoji() {
+    const emojis = ["😊", "😂", "😍", "😎", "🤔"];
+    return emojis[Math.floor(Math.random() * emojis.length)];
+}
