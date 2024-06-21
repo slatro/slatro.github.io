@@ -19,17 +19,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let timer;
     let answers = [];
     let gameID = '';
+    let gameOwner = false;
 
     startGameBtn.addEventListener('click', () => {
         const timeSelect = document.getElementById('time-select').value;
         const playerSelect = document.getElementById('player-select').value;
         gameID = generateUUID();
+        gameOwner = true;
         setupGame(parseInt(timeSelect), parseInt(playerSelect));
     });
 
     beginGameBtn.addEventListener('click', () => {
-        if (players.length > 0 && players.every(player => player.ready)) {
-            startRound();
+        const playerIndex = players.findIndex(player => player.name === getPlayerName());
+        if (playerIndex !== -1) {
+            players[playerIndex].ready = true;
+            updatePlayersList();
+            if (players.every(player => player.ready)) {
+                startRound();
+            }
         }
     });
 
@@ -38,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         answerInputs.forEach(input => {
             const answer = input.value.trim();
             if (answer) {
-                answers.push({ player: 'Me', category: input.dataset.category, answer });
+                answers.push({ player: getPlayerName(), category: input.dataset.category, answer });
                 input.value = '';
             }
         });
@@ -47,11 +54,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupGame(time, playerCount) {
         players = Array.from({ length: playerCount }, (_, i) => ({ name: `Player ${i + 1}`, ready: false }));
-        playersList.innerHTML = players.map(player => `<div>${player.name}</div>`).join('');
+        players[0].ready = gameOwner; // First player is the game owner and is ready
+        updatePlayersList();
         gameDashboard.style.display = 'block';
         gameLink.textContent = `Oyuna katılmak için bu linki paylaşın: ${window.location.origin}${window.location.pathname}?game=${gameID}`;
         gameBoard.style.display = 'none';
         resultsDiv.style.display = 'none';
+    }
+
+    function updatePlayersList() {
+        playersList.innerHTML = players.map(player => `
+            <div>${player.name} ${player.ready ? '✔️' : ''}</div>
+        `).join('');
+        beginGameBtn.disabled = players.some(player => !player.ready);
     }
 
     function startRound() {
@@ -127,6 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function getPlayerName() {
+        return `Player ${players.length + 1}`;
+    }
+
     function checkGameLink() {
         const urlParams = new URLSearchParams(window.location.search);
         const game = urlParams.get('game');
@@ -139,9 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function joinGame() {
         gameSetup.style.display = 'none';
         gameDashboard.style.display = 'block';
-        players.push({ name: `Player ${players.length + 1}`, ready: false });
-        playersList.innerHTML = players.map(player => `<div>${player.name}</div>`).join('');
-        beginGameBtn.disabled = false;
+        players.push({ name: getPlayerName(), ready: false });
+        updatePlayersList();
     }
 
     checkGameLink();
