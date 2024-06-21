@@ -26,16 +26,18 @@
             </select>
             <button id="start-game">Oyunu Başlat</button>
         </div>
-        <div class="game-dashboard">
-            <div class="players-list" id="players-list"></div>
+        <div class="game-dashboard" style="display: none;">
+            <h2>Oyuncular</h2>
+            <div id="players-list"></div>
+            <p id="game-link"></p>
             <button id="begin-game">Oyuna Başla</button>
         </div>
-        <div class="game-board" id="game-board">
-            <div class="category">İsim</div>
-            <input type="text" id="category-input">
+        <div class="game-board" style="display: none;">
+            <h2 id="game-letter"></h2>
+            <div id="categories"></div>
             <button id="submit-answer">Cevabı Gönder</button>
         </div>
-        <div class="results" id="results">
+        <div class="results" style="display: none;">
             <h2>Sonuçlar</h2>
             <div id="results-list"></div>
         </div>
