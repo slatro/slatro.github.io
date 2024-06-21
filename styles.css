@@ -1,63 +1,86 @@
 body {
     font-family: Arial, sans-serif;
-    background: url('images/background.jpg') no-repeat center center fixed;
+    background: url('background.jpg') no-repeat center center fixed;
     background-size: cover;
+    color: #fff;
     margin: 0;
     padding: 0;
-    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .container {
-    width: 80%;
-    margin: auto;
     text-align: center;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     padding: 20px;
     border-radius: 10px;
-    margin-top: 50px;
+    width: 80%;
+    max-width: 600px;
 }
 
-header {
-    margin-top: 20px;
-}
-
-#game-settings {
+.game-setup, .game-dashboard, .game-board, .results {
     margin: 20px 0;
 }
 
-#game-screen, #result-screen {
-    margin-top: 20px;
+label, select, button, input {
+    margin: 5px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-#timer {
-    font-size: 1.5em;
-    margin: 20px 0;
+button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 15px;
 }
 
-#players {
+button:disabled {
+    background-color: #6c757d;
+}
+
+button:hover:enabled {
+    background-color: #218838;
+}
+
+.players-list {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.player {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.players-list div {
+    background: rgba(255, 255, 255, 0.2);
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1 1 calc(50% - 20px);
+    box-sizing: border-box;
 }
 
-#question-section {
-    margin-bottom: 20px;
-}
-
-.question {
+.category {
+    font-size: 24px;
     margin-bottom: 10px;
 }
 
-input[type="text"] {
-    width: 80%;
+#category-input {
     padding: 10px;
-    margin: 5px 0;
-    border: none;
-    border-radius: 5px;
+    width: 80%;
+}
+
+.results-list div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.tick, .cross {
+    margin-left: 10px;
+    cursor: pointer;
 }
