@@ -1,6 +1,6 @@
 document.getElementById('selectButton').addEventListener('click', function() {
     fetch('https://api.api-ninjas.com/v1/celebrity?nationality=tr', {
-        headers: { 'X-Api-Key': 'https://api.api-ninjas.com/v1/celebrity' }
+        headers: { 'X-Api-Key': 'X//XRcfxQiNykNdZo3E0UQ==amsPq0cijigHxwOe' }
     })
     .then(response => response.json())
     .then(data => {
