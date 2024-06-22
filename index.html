@@ -3,43 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İsim, Şehir Oyunu</title>
+    <title>Rastgele Ünlü Seçici</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>İsim, Şehir Oyunu</h1>
-        <div class="game-setup" id="game-setup">
-            <label for="time-select">Süre Seçimi:</label>
-            <select id="time-select">
-                <option value="100">100 saniye</option>
-                <option value="120">120 saniye</option>
-                <option value="150">150 saniye</option>
-                <option value="180">180 saniye</option>
-            </select>
-            <label for="player-select">Oyuncu Sayısı:</label>
-            <select id="player-select">
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-            <button id="start-game">Oyunu Oluştur</button>
-        </div>
-        <div class="game-dashboard" id="game-dashboard" style="display: none;">
-            <h2>Oyuncular</h2>
-            <div id="players-list"></div>
-            <p id="game-link"></p>
-            <button id="begin-game" disabled>Oyuna Başla</button>
-        </div>
-        <div class="game-board" id="game-board" style="display: none;">
-            <h2 id="game-letter"></h2>
-            <div id="categories"></div>
-            <button id="submit-answer">Cevabı Gönder</button>
-        </div>
-        <div class="results" id="results" style="display: none;">
-            <h2>Sonuçlar</h2>
-            <div id="results-list"></div>
-        </div>
+        <h1>Rastgele Ünlü Seçici</h1>
+        <button id="selectButton">Rastgele Ünlü Seç</button>
+        <div id="celebrityDisplay"></div>
     </div>
     <script src="script.js"></script>
 </body>
